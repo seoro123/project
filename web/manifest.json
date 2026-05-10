@@ -1,0 +1,35 @@
+{
+    "name": "Mood Diary",
+    "short_name": "Mood Diary",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#F8FCFF",
+    "theme_color": "#6F9AF4",
+    "description": "AI diary and social webtoon platform.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
