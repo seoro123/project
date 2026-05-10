@@ -10,6 +10,6 @@ void main() {
 
     expect(find.text('Social'), findsOneWidget);
     expect(find.text('Template'), findsOneWidget);
-    expect(find.text('Diary'), findsOneWidget);
+    expect(find.text('dairy'), findsOneWidget);
   });
 }
