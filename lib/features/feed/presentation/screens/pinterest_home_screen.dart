@@ -4058,7 +4058,7 @@ class _DiaryFigmaFrame extends StatelessWidget {
       );
     }
 
-    if (mobile && bookChrome) {
+    if (mobile && bookChrome && pageIndex < 0) {
       return DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -4085,6 +4085,10 @@ class _DiaryFigmaFrame extends StatelessWidget {
         onClose: onClose,
         child: child,
       );
+    }
+
+    if (mobile && bookChrome) {
+      return child;
     }
 
     return DecoratedBox(
@@ -4468,10 +4472,10 @@ class _DiaryClosedCover extends StatelessWidget {
           ),
         ),
         Positioned(
-          left: compact ? 20 : 34,
+          left: compact ? 16 : 34,
           top: compact ? 18 : 28,
           bottom: compact ? 18 : 28,
-          width: compact ? 42 : 64,
+          width: compact ? 34 : 64,
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: const Color(0xFF9DB4E2),
@@ -4489,9 +4493,9 @@ class _DiaryClosedCover extends StatelessWidget {
         ),
         Positioned(
           left: compact ? 2 : 8,
-          top: compact ? 40 : 58,
-          bottom: compact ? 40 : 58,
-          width: compact ? 98 : 146,
+          top: compact ? 46 : 58,
+          bottom: compact ? 46 : 58,
+          width: compact ? 74 : 146,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List<Widget>.generate(
@@ -4503,61 +4507,15 @@ class _DiaryClosedCover extends StatelessWidget {
         Positioned.fill(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
-              compact ? 88 : 146,
-              compact ? 30 : 46,
-              compact ? 26 : 52,
-              compact ? 28 : 48,
+              compact ? 58 : 146,
+              compact ? 26 : 46,
+              compact ? 12 : 52,
+              compact ? 24 : 48,
             ),
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  alignment: const Alignment(0.84, -0.72),
-                  child: Transform.rotate(
-                    angle: 0.06,
-                    child: _DiaryCoverMemoCard(compact: compact),
-                  ),
-                ),
-                Align(
-                  alignment: const Alignment(-0.78, -0.62),
-                  child: _DiarySoftBadge(
-                    icon: Icons.favorite_rounded,
-                    compact: compact,
-                  ),
-                ),
-                Align(
-                  alignment: const Alignment(0.76, 0.14),
-                  child: Transform.rotate(
-                    angle: -0.05,
-                    child: _DiaryCatSticker(compact: compact),
-                  ),
-                ),
-                Align(
-                  alignment: const Alignment(-0.54, 0.24),
-                  child: _DiaryCloudSticker(compact: compact),
-                ),
-                Align(
-                  alignment: const Alignment(0.03, -0.12),
-                  child: _DiaryCoverTitlePlate(compact: compact),
-                ),
-                Align(
-                  alignment: const Alignment(-0.78, 0.78),
-                  child: _DiaryCoverActionPill(
-                    icon: Icons.inventory_2_rounded,
-                    label: '\uBCF4\uAD00\uD568',
-                    onTap: onArchive,
-                    compact: compact,
-                  ),
-                ),
-                Align(
-                  alignment: const Alignment(0.82, 0.76),
-                  child: _DiaryCoverActionPill(
-                    icon: Icons.edit_note_rounded,
-                    label: '\uC0C8 \uC77C\uAE30',
-                    onTap: onStart,
-                    compact: compact,
-                  ),
-                ),
-              ],
+            child: _DiaryCoverContent(
+              compact: compact,
+              onArchive: onArchive,
+              onStart: onStart,
             ),
           ),
         ),
@@ -4573,8 +4531,8 @@ class _DiarySpringLoop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = compact ? 82.0 : 122.0;
-    final height = compact ? 28.0 : 40.0;
+    final width = compact ? 62.0 : 122.0;
+    final height = compact ? 24.0 : 40.0;
     return SizedBox(
       width: width,
       height: height,
@@ -4585,12 +4543,12 @@ class _DiarySpringLoop extends StatelessWidget {
             left: compact ? 17 : 25,
             right: 0,
             child: Container(
-              height: compact ? 18 : 26,
+              height: compact ? 15 : 26,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(
                   color: const Color(0xFFF8FAFF),
-                  width: compact ? 5 : 7,
+                  width: compact ? 4 : 7,
                 ),
                 boxShadow: <BoxShadow>[
                   BoxShadow(
@@ -4640,6 +4598,65 @@ class _DiarySpringLoop extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DiaryCoverContent extends StatelessWidget {
+  const _DiaryCoverContent({
+    required this.compact,
+    required this.onArchive,
+    required this.onStart,
+  });
+
+  final bool compact;
+  final VoidCallback onArchive;
+  final VoidCallback onStart;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Align(
+          alignment: const Alignment(0.86, -0.88),
+          child: _DiaryMoonSticker(compact: compact),
+        ),
+        Align(
+          alignment: const Alignment(-0.86, -0.82),
+          child: _DiaryBalloonSticker(compact: compact),
+        ),
+        Column(
+          children: <Widget>[
+            const Spacer(flex: 1),
+            _DiaryCoverTitlePlate(compact: compact),
+            SizedBox(height: compact ? 8 : 16),
+            Expanded(
+              flex: compact ? 6 : 6,
+              child: Center(child: _DiaryCatSticker(compact: compact)),
+            ),
+            SizedBox(height: compact ? 6 : 14),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _DiaryCoverActionPill(
+                  icon: Icons.inventory_2_rounded,
+                  label: '\uBCF4\uAD00\uD568',
+                  onTap: onArchive,
+                  compact: compact,
+                ),
+                Gap(compact ? 8 : 18),
+                _DiaryCoverActionPill(
+                  icon: Icons.edit_note_rounded,
+                  label: '\uC0C8 \uC77C\uAE30',
+                  onTap: onStart,
+                  compact: compact,
+                ),
+              ],
+            ),
+            const Spacer(flex: 1),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -4713,47 +4730,107 @@ class _DiaryCoverTitlePlate extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FBFF),
-        borderRadius: BorderRadius.circular(compact ? 8 : 10),
-        border: Border.all(color: const Color(0xFFB8CBEF), width: 1.3),
+        color: Colors.white.withValues(alpha: 0.88),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: const Color(0xFF8EB9EF), width: 1.5),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: AppTheme.ink.withValues(alpha: 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: AppTheme.tacticalBlue.withValues(alpha: 0.14),
+            blurRadius: 14,
+            offset: const Offset(0, 7),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          compact ? 16 : 30,
-          compact ? 14 : 24,
-          compact ? 16 : 30,
-          compact ? 14 : 24,
+        padding: EdgeInsets.symmetric(
+          horizontal: compact ? 18 : 30,
+          vertical: compact ? 8 : 12,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'MY',
-              style: TextStyle(
-                color: AppTheme.ink.withValues(alpha: 0.76),
-                fontSize: compact ? 30 : 48,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0,
+        child: Text(
+          'Mood diary',
+          style: TextStyle(
+            color: const Color(0xFF68A3DD),
+            fontSize: compact ? 22 : 34,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0,
+            shadows: <Shadow>[
+              Shadow(
+                color: Colors.white.withValues(alpha: 0.95),
+                blurRadius: 0,
+                offset: const Offset(0, 2),
               ),
-            ),
-            Text(
-              'MOOD DIARY',
-              style: TextStyle(
-                color: AppTheme.ink.withValues(alpha: 0.54),
-                fontSize: compact ? 11 : 15,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _DiaryMoonSticker extends StatelessWidget {
+  const _DiaryMoonSticker({required this.compact});
+
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = compact ? 42.0 : 66.0;
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        children: <Widget>[
+          Icon(
+            Icons.nightlight_round,
+            size: size,
+            color: const Color(0xFFFFDF68),
+          ),
+          Positioned(
+            right: 0,
+            top: size * 0.08,
+            child: Icon(
+              Icons.star_rounded,
+              size: size * 0.26,
+              color: Colors.white.withValues(alpha: 0.94),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DiaryBalloonSticker extends StatelessWidget {
+  const _DiaryBalloonSticker({required this.compact});
+
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = compact ? 36.0 : 58.0;
+    return SizedBox(
+      width: size,
+      height: size * 1.45,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: <Widget>[
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFBFD0).withValues(alpha: 0.78),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 1.5),
+            ),
+            child: SizedBox(width: size, height: size),
+          ),
+          Positioned(
+            top: size * 0.88,
+            child: Container(
+              width: 1.4,
+              height: size * 0.50,
+              color: Colors.white.withValues(alpha: 0.86),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -4964,119 +5041,11 @@ class _DiaryCatSticker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = compact ? 74.0 : 116.0;
+    final size = compact ? 138.0 : 218.0;
     return SizedBox(
       width: size,
-      height: size,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: <Widget>[
-          Positioned(
-            top: size * 0.04,
-            left: size * 0.18,
-            child: Transform.rotate(
-              angle: -0.34,
-              child: _DiaryCatEar(size: size * 0.30),
-            ),
-          ),
-          Positioned(
-            top: size * 0.04,
-            right: size * 0.18,
-            child: Transform.rotate(
-              angle: 0.34,
-              child: Transform.scale(
-                scaleX: -1,
-                child: _DiaryCatEar(size: size * 0.30),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: size * 0.04,
-            child: _DiaryCloudBase(width: size * 0.88, height: size * 0.34),
-          ),
-          Positioned(
-            top: size * 0.15,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFEFA),
-                borderRadius: BorderRadius.circular(size * 0.28),
-                border: Border.all(
-                  color: const Color(0xFF88B8EE),
-                  width: compact ? 1.8 : 2.4,
-                ),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: AppTheme.ink.withValues(alpha: 0.10),
-                    blurRadius: compact ? 9 : 14,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: SizedBox(width: size * 0.58, height: size * 0.52),
-            ),
-          ),
-          Positioned(
-            top: size * 0.38,
-            left: size * 0.39,
-            child: _DiaryCatEye(size: size * 0.055),
-          ),
-          Positioned(
-            top: size * 0.38,
-            right: size * 0.39,
-            child: _DiaryCatEye(size: size * 0.055),
-          ),
-          Positioned(
-            top: size * 0.49,
-            child: SizedBox(
-              width: size * 0.19,
-              height: size * 0.08,
-              child: CustomPaint(painter: const _DiaryCuteMouthPainter()),
-            ),
-          ),
-          Positioned(
-            left: size * 0.31,
-            top: size * 0.45,
-            child: _DiaryCheek(size: size * 0.09),
-          ),
-          Positioned(
-            right: size * 0.31,
-            top: size * 0.45,
-            child: _DiaryCheek(size: size * 0.09),
-          ),
-          Positioned(
-            left: size * 0.16,
-            top: size * 0.50,
-            child: _DiaryWhiskers(width: size * 0.22),
-          ),
-          Positioned(
-            right: size * 0.16,
-            top: size * 0.50,
-            child: Transform.scale(
-              scaleX: -1,
-              child: _DiaryWhiskers(width: size * 0.22),
-            ),
-          ),
-          Positioned(
-            left: size * 0.26,
-            bottom: size * 0.18,
-            child: Icon(
-              Icons.star_rounded,
-              size: size * 0.18,
-              color: const Color(0xFFFFD86E),
-            ),
-          ),
-          Positioned(
-            right: size * 0.24,
-            bottom: size * 0.16,
-            child: Icon(
-              Icons.auto_awesome_rounded,
-              size: size * 0.14,
-              color: AppTheme.tacticalBlue.withValues(alpha: 0.68),
-            ),
-          ),
-        ],
-      ),
+      height: size * 0.82,
+      child: CustomPaint(painter: _DiaryCatStickerPainter(compact: compact)),
     );
   }
 }
@@ -5130,6 +5099,269 @@ class _DiaryCheek extends StatelessWidget {
       ),
       child: SizedBox(width: size, height: size * 0.72),
     );
+  }
+}
+
+class _DiaryMascotPaw extends StatelessWidget {
+  const _DiaryMascotPaw({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFEFA),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: const Color(0xFF88B8EE), width: 1.5),
+      ),
+      child: SizedBox(width: size, height: size * 0.86),
+    );
+  }
+}
+
+class _DiaryCatStickerPainter extends CustomPainter {
+  const _DiaryCatStickerPainter({required this.compact});
+
+  final bool compact;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final blue = const Color(0xFF7DB5EC);
+    final paleBlue = const Color(0xFFEAF5FF);
+    final ink = const Color(0xFF5B9FDC);
+    final cheek = const Color(0xFFFFBCD1);
+    final yellow = const Color(0xFFFFD86E);
+    final white = const Color(0xFFFFFEFA);
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.13, h * 0.18, w * 0.74, h * 0.70),
+        Radius.circular(w * 0.18),
+      ),
+      Paint()
+        ..color = AppTheme.ink.withValues(alpha: 0.10)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
+    );
+
+    final cloud = Path()
+      ..moveTo(w * 0.08, h * 0.66)
+      ..cubicTo(w * 0.02, h * 0.50, w * 0.17, h * 0.40, w * 0.29, h * 0.47)
+      ..cubicTo(w * 0.34, h * 0.28, w * 0.55, h * 0.29, w * 0.60, h * 0.47)
+      ..cubicTo(w * 0.74, h * 0.38, w * 0.92, h * 0.48, w * 0.88, h * 0.66)
+      ..cubicTo(w * 0.95, h * 0.76, w * 0.82, h * 0.88, w * 0.67, h * 0.82)
+      ..cubicTo(w * 0.55, h * 0.95, w * 0.34, h * 0.90, w * 0.31, h * 0.78)
+      ..cubicTo(w * 0.20, h * 0.84, w * 0.07, h * 0.78, w * 0.08, h * 0.66)
+      ..close();
+    final fill = Paint()
+      ..color = white
+      ..style = PaintingStyle.fill;
+    final stroke = Paint()
+      ..color = blue
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = compact ? 2.0 : 2.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(cloud, fill);
+    canvas.drawPath(cloud, stroke);
+
+    final body = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(w * 0.50, h * 0.55),
+        width: w * 0.28,
+        height: h * 0.28,
+      ),
+      Radius.circular(w * 0.15),
+    );
+    canvas.drawRRect(body, fill);
+    canvas.drawRRect(body, stroke);
+
+    void drawEar({required Offset center, required bool flip}) {
+      canvas.save();
+      canvas.translate(center.dx, center.dy);
+      if (flip) {
+        canvas.scale(-1, 1);
+      }
+      final ear = Path()
+        ..moveTo(-w * 0.095, h * 0.055)
+        ..cubicTo(-w * 0.078, -h * 0.025, -w * 0.018, -h * 0.085, 0, -h * 0.095)
+        ..cubicTo(
+          w * 0.022,
+          -h * 0.070,
+          w * 0.085,
+          -h * 0.006,
+          w * 0.100,
+          h * 0.060,
+        )
+        ..cubicTo(
+          w * 0.050,
+          h * 0.040,
+          -w * 0.042,
+          h * 0.040,
+          -w * 0.095,
+          h * 0.055,
+        )
+        ..close();
+      canvas.drawPath(ear, fill);
+      canvas.drawPath(ear, stroke);
+      final inner = Path()
+        ..moveTo(-w * 0.040, h * 0.030)
+        ..cubicTo(
+          -w * 0.025,
+          -h * 0.015,
+          -w * 0.005,
+          -h * 0.038,
+          w * 0.010,
+          -h * 0.048,
+        )
+        ..cubicTo(
+          w * 0.030,
+          -h * 0.020,
+          w * 0.052,
+          h * 0.012,
+          w * 0.058,
+          h * 0.036,
+        )
+        ..close();
+      canvas.drawPath(
+        inner,
+        Paint()..color = const Color(0xFFFFDCE7).withValues(alpha: 0.82),
+      );
+      canvas.restore();
+    }
+
+    drawEar(center: Offset(w * 0.38, h * 0.23), flip: false);
+    drawEar(center: Offset(w * 0.62, h * 0.23), flip: true);
+
+    final head = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(w * 0.50, h * 0.34),
+        width: w * 0.40,
+        height: h * 0.34,
+      ),
+      Radius.circular(w * 0.17),
+    );
+    canvas.drawRRect(head, fill);
+    canvas.drawRRect(head, stroke);
+
+    final blushPaint = Paint()
+      ..color = cheek.withValues(alpha: 0.76)
+      ..style = PaintingStyle.fill;
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.39, h * 0.38),
+        width: w * 0.07,
+        height: h * 0.045,
+      ),
+      blushPaint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.61, h * 0.38),
+        width: w * 0.07,
+        height: h * 0.045,
+      ),
+      blushPaint,
+    );
+
+    final facePaint = Paint()
+      ..color = ink
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(w * 0.43, h * 0.32), w * 0.018, facePaint);
+    canvas.drawCircle(Offset(w * 0.57, h * 0.32), w * 0.018, facePaint);
+
+    final mouthPaint = Paint()
+      ..color = ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = compact ? 1.6 : 2.2
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(w * 0.50, h * 0.36),
+      Offset(w * 0.50, h * 0.39),
+      mouthPaint,
+    );
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(w * 0.475, h * 0.39),
+        width: w * 0.052,
+        height: h * 0.052,
+      ),
+      0.12,
+      2.30,
+      false,
+      mouthPaint,
+    );
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(w * 0.525, h * 0.39),
+        width: w * 0.052,
+        height: h * 0.052,
+      ),
+      0.70,
+      2.30,
+      false,
+      mouthPaint,
+    );
+
+    for (final center in <Offset>[
+      Offset(w * 0.38, h * 0.56),
+      Offset(w * 0.62, h * 0.56),
+    ]) {
+      final paw = Rect.fromCenter(
+        center: center,
+        width: w * 0.085,
+        height: h * 0.11,
+      );
+      canvas.drawOval(paw, fill);
+      canvas.drawOval(paw, stroke);
+    }
+
+    final starPath = Path()
+      ..moveTo(w * 0.50, h * 0.47)
+      ..lineTo(w * 0.535, h * 0.535)
+      ..lineTo(w * 0.61, h * 0.545)
+      ..lineTo(w * 0.555, h * 0.595)
+      ..lineTo(w * 0.57, h * 0.67)
+      ..lineTo(w * 0.50, h * 0.635)
+      ..lineTo(w * 0.43, h * 0.67)
+      ..lineTo(w * 0.445, h * 0.595)
+      ..lineTo(w * 0.39, h * 0.545)
+      ..lineTo(w * 0.465, h * 0.535)
+      ..close();
+    canvas.drawPath(starPath, Paint()..color = yellow);
+    canvas.drawPath(
+      starPath,
+      Paint()
+        ..color = Colors.white.withValues(alpha: 0.86)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = compact ? 1.0 : 1.4,
+    );
+
+    _drawSparkle(
+      canvas,
+      Offset(w * 0.23, h * 0.62),
+      w * 0.035,
+      Paint()..color = paleBlue,
+    );
+    _drawSparkle(
+      canvas,
+      Offset(w * 0.76, h * 0.60),
+      w * 0.028,
+      Paint()..color = paleBlue,
+    );
+    _drawSparkle(
+      canvas,
+      Offset(w * 0.72, h * 0.76),
+      w * 0.025,
+      Paint()..color = yellow,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _DiaryCatStickerPainter oldDelegate) {
+    return oldDelegate.compact != compact;
   }
 }
 
@@ -5307,6 +5539,7 @@ class _DiaryCoverActionPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final maxLabelWidth = compact ? 56.0 : 96.0;
     return _PressableScale(
       onTap: onTap,
       child: DecoratedBox(
@@ -5324,20 +5557,25 @@ class _DiaryCoverActionPill extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: compact ? 11 : 17,
-            vertical: compact ? 8 : 11,
+            horizontal: compact ? 8 : 17,
+            vertical: compact ? 7 : 11,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(icon, color: AppTheme.tacticalBlue, size: compact ? 17 : 20),
-              Gap(compact ? 5 : 7),
-              Text(
-                label,
-                style: TextStyle(
-                  color: AppTheme.ink,
-                  fontSize: compact ? 12 : 14,
-                  fontWeight: FontWeight.w900,
+              Icon(icon, color: AppTheme.tacticalBlue, size: compact ? 15 : 20),
+              Gap(compact ? 4 : 7),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxLabelWidth),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: AppTheme.ink,
+                    fontSize: compact ? 11 : 14,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
             ],
