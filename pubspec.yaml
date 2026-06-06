@@ -45,6 +45,8 @@ dependencies:
   shimmer: ^3.0.0
   lottie: ^3.3.3
   flutter_svg: ^2.2.2
+  file_picker: ^10.3.7
+  shared_preferences: ^2.5.3
 
   # Forms
   form_validator: ^2.1.1

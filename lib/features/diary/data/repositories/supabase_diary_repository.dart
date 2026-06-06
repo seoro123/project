@@ -8,6 +8,7 @@ import '../../../../core/enums/webtoon_format.dart';
 import '../models/diary_album_model.dart';
 import '../models/diary_model.dart';
 import '../models/diary_panel_model.dart';
+import '../models/diary_style_template_model.dart';
 
 class SupabaseDiaryRepository {
   const SupabaseDiaryRepository(this._client);
@@ -27,8 +28,12 @@ class SupabaseDiaryRepository {
     String? artSubStyle,
     String? genreSubtype,
     List<String> keywordTags = const <String>[],
+    String? caption,
     String? personaId,
+    String? styleTemplateId,
+    String? styleTemplatePrompt,
     bool isPublic = false,
+    String visibility = 'private',
   }) async {
     final row = await _client
         .from('diaries')
@@ -39,13 +44,17 @@ class SupabaseDiaryRepository {
           'diary_at': diaryAt?.toIso8601String(),
           'weather': weather.value,
           'content': content,
+          'caption': caption,
           'keyword_tags': keywordTags,
           'art_style': artStyle.value,
           'art_sub_style': artSubStyle,
+          'style_template_id': styleTemplateId,
+          'style_template_prompt': styleTemplatePrompt,
           'genre': genre.value,
           'genre_subtype': genreSubtype,
           'webtoon_format': webtoonFormat.value,
           'is_public': isPublic,
+          'visibility': visibility,
           'generation_status': DiaryGenerationStatus.queued.value,
         })
         .select()
@@ -103,6 +112,22 @@ class SupabaseDiaryRepository {
         .toList();
   }
 
+  Future<List<DiaryStyleTemplateModel>> fetchStyleTemplates() async {
+    final rows = await _client
+        .from('diary_style_templates')
+        .select()
+        .eq('is_active', true)
+        .order('sort_order')
+        .order('created_at');
+
+    return rows
+        .map<DiaryStyleTemplateModel>(
+          (dynamic row) =>
+              DiaryStyleTemplateModel.fromJson(row as Map<String, dynamic>),
+        )
+        .toList();
+  }
+
   /// 일기 컷 목록을 순서대로 가져와 슬라이드/재시도 UI의 기준 데이터로 사용합니다.
   Future<List<DiaryPanelModel>> fetchDiaryPanels(String diaryId) async {
     final rows = await _client
@@ -147,19 +172,27 @@ class SupabaseDiaryRepository {
   Future<void> retryDiaryPanel({
     required String diaryId,
     required String panelId,
+    String retryFeedback = '',
   }) async {
     await _client.rpc<void>(
       'request_diary_panel_retry',
       params: <String, dynamic>{'target_panel_id': panelId},
     );
-    await _client.functions.invoke(
-      'generate-diary-assets',
-      body: <String, dynamic>{
-        'diary_id': diaryId,
-        'panel_id': panelId,
-        'mode': 'retry_panel',
-      },
-    );
+    final response = await _client.functions
+        .invoke(
+          'generate-diary-assets',
+          body: <String, dynamic>{
+            'diary_id': diaryId,
+            'panel_id': panelId,
+            'mode': 'retry_panel',
+            if (retryFeedback.trim().isNotEmpty)
+              'retry_feedback': retryFeedback.trim(),
+          },
+        )
+        .timeout(const Duration(seconds: 180));
+    if (response.status >= 400) {
+      throw Exception(response.data);
+    }
   }
 
   /// 앨범 목록과 앨범에 들어간 일기 ID를 함께 가져옵니다.
@@ -187,6 +220,17 @@ class SupabaseDiaryRepository {
     String colorHex = '#86BFFF',
     bool isPublic = true,
   }) async {
+    final existingRows = await _client
+        .from('diary_albums')
+        .select()
+        .eq('user_id', userId)
+        .eq('title', title)
+        .limit(1);
+
+    if (existingRows.isNotEmpty) {
+      return DiaryAlbumModel.fromJson(existingRows.first);
+    }
+
     final row = await _client
         .from('diary_albums')
         .insert(<String, dynamic>{
@@ -213,6 +257,26 @@ class SupabaseDiaryRepository {
       'album_id': albumId,
       'diary_id': diaryId,
     }, onConflict: 'album_id,diary_id');
+  }
+
+  Future<void> removeDiaryFromAlbum({
+    required String albumId,
+    required String diaryId,
+  }) async {
+    await _client
+        .from('diary_album_items')
+        .delete()
+        .eq('album_id', albumId)
+        .eq('diary_id', diaryId);
+  }
+
+  Future<void> deleteAlbum(String albumId) async {
+    await _client.from('diary_album_items').delete().eq('album_id', albumId);
+    await _client.from('diary_albums').delete().eq('id', albumId);
+  }
+
+  Future<void> deleteDiary(String diaryId) async {
+    await _client.from('diaries').delete().eq('id', diaryId);
   }
 
   /// 앨범-일기 연결이 RLS에 막힌 경우를 대비해, 게스트 프로토타입용 RPC 없이

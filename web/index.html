@@ -17,16 +17,14 @@
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="AI diary and social webtoon platform.">
+  <meta name="description" content="AI 일기와 캐릭터 웹툰을 앱처럼 기록하고 공유하는 플랫폼.">
   <meta name="theme-color" content="#6F9AF4">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Mood Diary">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
@@ -36,14 +34,19 @@
 
   <title>Mood Diary</title>
   <link rel="manifest" href="manifest.json">
+  <script src="pwa_install.js" defer></script>
 </head>
 <body>
   <script>
-    // 개발 중 이전 Flutter 서비스워커가 낡은 main.dart.js를 붙잡아 한글이 깨져 보이는 문제를 막습니다.
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => registration.unregister());
-      });
+    // Local preview should always show the newest build while the UI is being tuned.
+    if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations()
+          .then((registrations) => registrations.forEach((registration) => registration.unregister()));
+      }
+      if ('caches' in window) {
+        caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
+      }
     }
   </script>
   <!--

@@ -8,8 +8,8 @@ void main() {
   ) async {
     await tester.pumpWidget(const ProviderScope(child: AiDiarySocialApp()));
 
-    expect(find.text('Social'), findsOneWidget);
-    expect(find.text('Template'), findsOneWidget);
-    expect(find.text('Diary'), findsOneWidget);
+    expect(find.text('피드'), findsOneWidget);
+    expect(find.text('캐릭터'), findsOneWidget);
+    expect(find.text('일기'), findsOneWidget);
   });
 }

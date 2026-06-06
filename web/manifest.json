@@ -1,13 +1,51 @@
 {
+    "id": "/",
     "name": "Mood Diary",
-    "short_name": "Mood Diary",
-    "start_url": ".",
+    "short_name": "Mood",
+    "start_url": "/?source=pwa",
+    "scope": "/",
     "display": "standalone",
+    "display_override": [
+        "window-controls-overlay",
+        "standalone",
+        "minimal-ui"
+    ],
     "background_color": "#F8FCFF",
     "theme_color": "#6F9AF4",
-    "description": "AI diary and social webtoon platform.",
+    "description": "AI 일기와 캐릭터 웹툰을 앱처럼 기록하고 공유하는 플랫폼.",
     "orientation": "portrait-primary",
+    "categories": [
+        "social",
+        "lifestyle",
+        "entertainment"
+    ],
     "prefer_related_applications": false,
+    "shortcuts": [
+        {
+            "name": "일기 쓰기",
+            "short_name": "일기",
+            "description": "새 AI 일기를 작성합니다.",
+            "url": "/?source=pwa&tab=diary",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "소셜 보기",
+            "short_name": "소셜",
+            "description": "공유된 일기를 둘러봅니다.",
+            "url": "/?source=pwa&tab=social",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
     "icons": [
         {
             "src": "icons/Icon-192.png",

@@ -14,6 +14,7 @@ class SocialFeedItemEntity {
     required this.personaName,
     required this.title,
     required this.content,
+    required this.caption,
     required this.summary,
     required this.emotionTags,
     required this.keywordTags,
@@ -36,6 +37,7 @@ class SocialFeedItemEntity {
   final String? personaName;
   final String? title;
   final String content;
+  final String? caption;
   final String? summary;
   final List<String> emotionTags;
   final List<String> keywordTags;
@@ -61,6 +63,7 @@ class SocialFeedItemEntity {
             personaName == other.personaName &&
             title == other.title &&
             content == other.content &&
+            caption == other.caption &&
             summary == other.summary &&
             listEqualsByValue(emotionTags, other.emotionTags) &&
             listEqualsByValue(keywordTags, other.keywordTags) &&
@@ -86,6 +89,7 @@ class SocialFeedItemEntity {
       personaName,
       title,
       content,
+      caption,
       summary,
       Object.hashAll(emotionTags),
       Object.hashAll(keywordTags),
